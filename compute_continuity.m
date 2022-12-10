@@ -1,4 +1,4 @@
-function continuity_map = compute_continuity(u_map,v_map,x_int,y_int)
+function [u_continuity_map,v_continuity_map,continuity_map] = compute_continuity(u_map,v_map,x_int,y_int)
 
 %
 % compute_continuity
@@ -25,10 +25,10 @@ if (x_int < 0 || y_int < 0)
 end
 
 % Calulate du/dx
-u_continuity_map = dudx(u_map,x_int);
+u_continuity_map = compute_dudx(u_map,x_int);
 
 % Calculte dv/dy
-v_continuity_map = dvdy(v_map,y_int);
+v_continuity_map = compute_dvdy(v_map,y_int);
 
 % Calculate dw/dz = -(du/dx + dv/dy)
 continuity_map = -(u_continuity_map + v_continuity_map);

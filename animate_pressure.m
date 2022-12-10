@@ -31,6 +31,9 @@ frame_rate = 100; % Frame Rate
 % Constant
 rho = 1.201;
 
+% Play speed
+PLAY_SPEED = 10;
+
 %% Check inputs
 
 if (~exist(PIV_data_filename,'file'))
@@ -77,13 +80,13 @@ colormap("jet");
 colorbar
 xlim([min((mean_x{end}*1000-object_length)/object_width,[],"all"),max((mean_x{end}*1000-object_length)/object_width,[],"all")]);
 ylim([min(mean_y{end}*1000/object_width,[],"all"),max(mean_y{end}*1000/object_width,[],"all")]);
-caxis([-0.1,0.1]);
+caxis([-0.5,0.5]);
 axis equal
 xlabel("x/H");
 ylabel("y/H");
 title(sprintf("t=%.3f[s]",0));
 
-for ii = 1:time_step
+for ii = 1:PLAY_SPEED:time_step
     % Update figure
     pfig.XData = (mean_x{ii}*1000-object_length)/object_width;
     pfig.YData = mean_y{ii}*1000/object_width;
@@ -94,7 +97,7 @@ for ii = 1:time_step
     y_int = abs(mean_y{ii}(2) - mean_y{ii}(1));
 
     % Compute continuity
-    pressure = solve_Poisson_rectangle(meanMap_u_filtered{ii},meanMap_u_filtered{ii},x_int,y_int,false);
+    pressure = solve_Poisson_rectangle(meanMap_u_filtered{ii},meanMap_v_filtered{ii},x_int,y_int,false);
     normalize_pressure = pressure./(1/2*rho*mean(meanMap_u_filtered{ii},"all","omitnan"));
     pfig.CData = normalize_pressure;
 

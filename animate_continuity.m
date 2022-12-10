@@ -61,7 +61,7 @@ ii = 1;
 % Get interval
 x_int = abs(mean_x{ii}(2) - mean_x{ii}(1));
 y_int = abs(mean_y{ii}(2) - mean_y{ii}(1));
-continuity_map = compute_continuity(meanMap_u_filtered{ii},meanMap_u_filtered{ii},x_int,y_int);
+[u_continuity_map,v_continuity_map,continuity_map] = compute_continuity(meanMap_u_filtered{ii},meanMap_u_filtered{ii},x_int,y_int);
 
 % Visualize
 fig = figure;

@@ -18,18 +18,18 @@ logging_func("Check truck velocity");
 %% Setting
 
 % Specify input files (truck acceleration data)
-input_file_name = "../加速度データ_xo350W45固定壁L1H1/maindata";
-input_file_ID = [1:5];
+input_file_name = "../加速度データ_xo350W30固定壁L1H1定常/maindata";
+input_file_ID = [1:4];
 
 % Specify max number of data
 max_num_data = 2*10^4; % 最大20s計測で1000fpsだから、データの最大数は2*10^4
 
 % Point of starting acceleration in PIV data
-PIV_start_accleration_point = [590, 591, 680, 632, 560];
+PIV_start_accleration_point = [603, 719, 551, 535];
 
 % Specify velocity analysis mode (1-analysis 0-not analsis)
 ACCELERATION_MODE  = 1;
-CONSTVELOCITY_MODE = 0;
+CONSTVELOCITY_MODE = 1;
 
 % Specify threshold for accelerating start
 accelerating_start_threshold = 3E-3;
@@ -42,7 +42,7 @@ offset = 2;
 SAVE_MODE = 1;
 
 % Specify output folder and file
-output_folder_name = '../加速度データ_xo350W45固定壁L1H1';
+output_folder_name = '../加速度データ_xo350W30固定壁L1H1定常';
 output_file_name = 'truck_data';
 
 %% Check specified files and folders

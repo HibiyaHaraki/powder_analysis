@@ -29,16 +29,17 @@ Truck_data_filename = "../加速度データ_xo350W30固定壁L1H1定常/Truck_d
 % Output folder
 output_folder = '../PIV_xo350W30固定壁L1H1定常/result';
 
-% Search time
-search_t = 0:0.5:3;
+% Bottom boundary condition (0-neumann, 1-dirichlet)
+BOTTOM_BOUNDARY_CONDITION = 1;
 
-% Vorticity existance
-VORTICITY = true;
+% Search time
+search_t = 1:1:3;
 
 % Constant
 rho = 1.201;
 
-calculation_check = false;
+% Calculation check
+calculation_check = true;
 
 %% Check input
 
@@ -89,6 +90,13 @@ for ii = 1:num_search_t
     y_int = abs(mean_y{ind_t(ii)}(2) - mean_y{ind_t(ii)}(1));
 
     % Compute Poisson equation
+    %{
+    if (BOTTOM_BOUNDARY_CONDITION == 0)
+        pressure = solve_Poisson_rectangle(meanMap_u_filtered{ind_t(ii)},meanMap_v_filtered{ind_t(ii)},x_int,y_int,calculation_check);
+    else
+        pressure = solve_Poisson_rectangle_dirichlet_bottom(meanMap_u_filtered{ind_t(ii)},meanMap_v_filtered{ind_t(ii)},x_int,y_int,calculation_check);
+    end
+    %}
     pressure = solve_Poisson_rectangle(meanMap_u_filtered{ind_t(ii)},meanMap_v_filtered{ind_t(ii)},x_int,y_int,calculation_check);
     normalize_pressure = pressure./(1/2*rho*mean(meanMap_u_filtered{ind_t(ii)},"all","omitnan"));
 

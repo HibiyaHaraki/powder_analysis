@@ -62,8 +62,10 @@ function [mean_data,std_data] = get_PIV_Data_meanMap(input_file_names,data_label
         tmp_std_data = squeeze(std(all_data,1,"omitnan"));
 
         % Make NaN by typevector
-        tmp_mean_data(1:object_typevector_y_max,1:object_typevector_x_max) = NaN;
-        tmp_std_data(1:object_typevector_y_max,1:object_typevector_x_max)  = NaN;
+        %tmp_mean_data(1:object_typevector_y_max,1:object_typevector_x_max) = NaN;
+        %tmp_std_data(1:object_typevector_y_max,1:object_typevector_x_max)  = NaN;
+        tmp_mean_data(typevector_matrix == 0) = NaN;
+        tmp_std_data(typevector_matrix == 0)  = NaN;
 
         % Convert mat to cell
         mean_data(ii) = {tmp_mean_data};

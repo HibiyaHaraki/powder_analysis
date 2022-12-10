@@ -12,15 +12,16 @@ function p = solve_Poisson_rectangle(u_map,v_map,x_int,y_int,CHECK)
 %  * logging_func.m
 %
 % Warning
-%  This script assume that object shape is rectangle and the position is upper-left!!
+%  This script assume that object shape is rectangle and the position is upper-left.
+%  This script assume that there is a Dirichlet boundary condition on the left and right edge.
+%  This script assume that there is a Neuman boundary condition on the top edge, bottom edge, and object surface.
 %
 
 logging_func("Solve Poisson equation");
 
 % Neuman Condition
-p_top = 0;
-p_bottom = 0;
-p_surface = 0;
+p_right = 0;
+p_left_diff = 0;
 
 % Constants
 rho = 1.201;
@@ -72,24 +73,56 @@ end
 
 % Set coefficients
 logging_func("Set coefficients");
+diff_boundary_nodes = [];
 for ii = 1:map_size(1)
     for jj = 1:map_size(2)
         % Set -1/4*h^2*Q to b
         b((ii-1)*map_size(2)+jj,1) = -h^2*Q(ii,jj);
 
-        % Set Dirichlet boundary condition
+        % Set Neumann boundary condition
+        % Top
+        if (ii == 1 && jj > object_x_stop)
+            if (jj < map_size(2))
+                diff_boundary_nodes = [diff_boundary_nodes,(ii-1)*map_size(2)+jj];
+                A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj  )) =  1;
+                A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj+1)) = -1;
+                b((ii-1)*map_size(2)+jj,1) = 0;
+                continue;
+            end
+        end
+
+        % Bottom
+        if (ii == map_size(1))
+            if (jj < map_size(2))
+                diff_boundary_nodes = [diff_boundary_nodes,(ii-1)*map_size(2)+jj];
+                A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj  )) =  1;
+                A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj+1)) = -1;
+                b((ii-1)*map_size(2)+jj,1) = 0;
+                continue;
+            end
+        end
+
         % Left
         if (ii > object_y_stop && jj == 1)
+            diff_boundary_nodes = [diff_boundary_nodes,(ii-1)*map_size(2)+jj];
             A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj  )) =  1;
             A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj+1)) = -1;
-            b((ii-1)*map_size(2)+jj,1) = 0;
+            b((ii-1)*map_size(2)+jj,1) = p_left_diff*x_int;
             continue;
         end
 
-        % Right
-        if (jj == map_size(2))
+        % Object Surface
+        if (ii == object_y_stop + 1 && jj >= object_x_start && jj <= object_x_stop)
+            diff_boundary_nodes = [diff_boundary_nodes,(ii-1)*map_size(2)+jj];
             A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj  )) =  1;
-            A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj-1)) = -1;
+            A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj +1)) = -1;
+            b((ii-1)*map_size(2)+jj,1) = 0;
+            continue;
+        end
+        if (ii >= object_y_start && ii <= object_y_stop && jj == object_x_stop + 1)
+            diff_boundary_nodes = [diff_boundary_nodes,(ii-1)*map_size(2)+jj];
+            A((ii-1)*map_size(2)+jj,(ii-1)*map_size(2)+(jj  )) =  1;
+            A((ii-1)*map_size(2)+jj,(ii  )*map_size(2)+(jj  )) = -1;
             b((ii-1)*map_size(2)+jj,1) = 0;
             continue;
         end
@@ -122,33 +155,15 @@ delete_list = [];
 for ii = 1:map_size(1)
     for jj = 1:map_size(2)
         % Set Neuman boundary condition
-        % Top
-        if (ii == 1 && jj > object_x_start)
+        % Right
+        if (jj == map_size(2))
             delete_count = delete_count + 1;
             delete_list(delete_count) = (ii-1)*map_size(2)+jj;
-            b(:,1) = b(:,1) - p_top*A(:,(ii-1)*map_size(2)+jj);
+            b(:,1) = b(:,1) - p_right*A(:,(ii-1)*map_size(2)+jj);
+            p(ii,jj) = p_right;
             continue;
         end
-        % Bottom
-        if (ii == map_size(1))
-            delete_count = delete_count + 1;
-            delete_list(delete_count) = (ii-1)*map_size(2)+jj;
-            b(:,1) = b(:,1) - p_bottom*A(:,(ii-1)*map_size(2)+jj);
-            continue;
-        end
-        % Object Surface
-        if (ii == object_y_stop + 1 && jj >= object_x_start && jj <= object_x_stop + 1)
-            delete_count = delete_count + 1;
-            delete_list(delete_count) = (ii-1)*map_size(2)+jj;
-            b(:,1) = b(:,1) - p_surface*A(:,(ii-1)*map_size(2)+jj);
-            continue;
-        end
-        if (ii >= object_y_start && ii <= object_y_stop + 1 && jj == object_x_stop + 1)
-            delete_count = delete_count + 1;
-            delete_list(delete_count) = (ii-1)*map_size(2)+jj;
-            b(:,1) = b(:,1) - p_surface*A(:,(ii-1)*map_size(2)+jj);
-            continue;
-        end
+        
     end
 end
 
@@ -167,23 +182,25 @@ end
 
 % Check deleting points
 if (CHECK)
+    logging_func("Check the linear system status");
     figure
+    subplot(2,1,1)
     plot(matrix_index(:,1),matrix_index(:,2),'k.');
     hold on
     plot(matrix_index(delete_list,1),matrix_index(delete_list,2),'r.');
+    plot(matrix_index(diff_boundary_nodes,1),matrix_index(diff_boundary_nodes,2),'g.');
     plot(matrix_index(isnan(b),1),matrix_index(isnan(b),2),'ro');
     hold off
     grid on
     axis equal
-    legend("Nodes","Deleting nodes","b is NaN");
+    legend("Nodes","Deleting nodes","Set Differenciation BCs","b is NaN");
     set(gca,'Ydir','reverse');
     title("Deleting elements");
 
-    figure
+    subplot(2,1,2)
     spy(A);
+    title("Coefficient sparse matrix");
 end
-
-
 
 % Delete unnecessary element
 logging_func("Delete unnecessary element");
@@ -195,11 +212,11 @@ b(delete_list) = [];
 matrix_index(delete_list,:) = [];
 
 % Check result
-logging_func("Compute linear system");
 logging_func(sprintf("Matrix A > Size: %d, Rank: %d",length(A(:,1)),sprank(A)));
 logging_func(sprintf("Vector b includes %d NaN",nnz(isnan(b))));
 
 % Compute linear system
+logging_func("Compute linear system");
 result_p = A\b;
 
 logging_func("Output pressure");

@@ -57,7 +57,6 @@ function [velocity_fluctuation_acceleration,velocity_fluctuation_constVelocity,r
 
     PIV_data = load(PIV_data_filename, ...
         "meanMap_u_filtered","meanMap_v_filtered", ...
-        "reference_velocity_ratio", ...
         "mean_x","mean_y");
 
     Truck_data = load(Truck_data_filename, ...
@@ -105,7 +104,6 @@ function [velocity_fluctuation_acceleration,velocity_fluctuation_constVelocity,r
 
     % constant velocity
     if (~isnan(characteristicVelocity_constVelocity))
-        velocity_fluctuation_constVelocity = nan(num_search_pixel,length(characteristicVelocity_constVelocity));
         constVelocity_start = 1;
         if (~isnan(characteristicVelocity_acceleration))
             constVelocity_start = constVelocity_start + length(characteristicVelocity_acceleration);
@@ -117,6 +115,8 @@ function [velocity_fluctuation_acceleration,velocity_fluctuation_constVelocity,r
             constVelocity_stop = constVelocity_start + length(characteristicVelocity_acceleration);
         end
         %}
+
+        velocity_fluctuation_constVelocity = nan(num_search_pixel,length(constVelocity_start:constVelocity_stop));
 
         for ii = constVelocity_start:constVelocity_stop
             % Get coordinates and indexes of search pixel
@@ -132,7 +132,7 @@ function [velocity_fluctuation_acceleration,velocity_fluctuation_constVelocity,r
         
             % Compute velocity fluctuation
             PIV_u_matrix = PIV_data.meanMap_u_filtered{ii};
-            velocity_fluctuation_constVelocity(:,ii-constVelocity_start+1) = diag(PIV_u_matrix(ind_y(:,ii),ind_x(:,ii))) ./ max(Truck_data.truck_constVelocity_mean_vx);
+            velocity_fluctuation_constVelocity(:,ii-constVelocity_start+1) = diag(PIV_u_matrix(ind_y(:,ii),ind_x(:,ii))) ./ max(Truck_data.truck_constVelocity_mean_vx,[],"all");
         end
     end
 end

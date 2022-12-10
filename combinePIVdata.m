@@ -2,17 +2,17 @@ clear; close all ; clc;
 logging_func("Start combinePIVdata.m");
 %% Setting
 % Input File name
-input_filename(1) = "../PIV_xo350W60固定壁L3H1定常/データ/データ5/data5_4pix_592to1567.mat";
-input_filename(2) = "../PIV_xo350W60固定壁L3H1定常/データ/データ5/data5_8pix_1566to2417.mat";
-input_filename(3) = "../PIV_xo350W60固定壁L3H1定常/データ/データ5/data5_8pix_2429to5100.mat";
+input_filename(1) = "../PIV_xo350W45固定壁L1H1/データ/データ1/data1_4pix_590to1454.mat";
+input_filename(2) = "../PIV_xo350W45固定壁L1H1/データ/データ1/data1_8pix_1453to4119.mat";
+%input_filename(3) = "../PIV_xo350W45固定壁L1H1/データ/データ1/data1_8pix_2470to5158.mat";
+
 % Unnecessary Data
 unnecessary_data(1) = {[]};
 unnecessary_data(2) = {[1]};
-unnecessary_data(3) = {[]};
+%unnecessary_data(3) = {[]};
 
 % Output file name
-output_filename = "../PIV_xo350W60固定壁L3H1定常/データ/データ5/data5combine.mat";
-
+output_filename = "../PIV_xo350W45固定壁L1H1/データ/データ1/data1combine.mat";
 %% Input check
 if (length(input_filename) < 2)
     error("Error!!: Input file should be more than 2");

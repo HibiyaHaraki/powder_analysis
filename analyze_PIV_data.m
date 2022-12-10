@@ -24,11 +24,11 @@ logging_func("Analyze PIV data");
 
 % Input files
 
-file_name(1) = "../PIV_xo350W60固定壁L1H1/データ/データ1/data1combine.mat";
-file_name(2) = "../PIV_xo350W60固定壁L1H1/データ/データ2/data2combine.mat";
-file_name(3) = "../PIV_xo350W60固定壁L1H1/データ/データ3/data3combine.mat";
-file_name(4) = "../PIV_xo350W60固定壁L1H1/データ/データ4/data4combine.mat";
-file_name(5) = "../PIV_xo350W60固定壁L1H1/データ/データ5/data5combine.mat";
+file_name(1) = "../PIV_xo350W45固定壁L1H1定常/データ/データ1/data1combine.mat";
+file_name(2) = "../PIV_xo350W45固定壁L1H1定常/データ/データ2/data2combine.mat";
+file_name(3) = "../PIV_xo350W45固定壁L1H1定常/データ/データ3/data3combine.mat";
+file_name(4) = "../PIV_xo350W45固定壁L1H1定常/データ/データ4/data4combine.mat";
+file_name(5) = "../PIV_xo350W45固定壁L1H1定常/データ/データ5/data5combine.mat";
 
 % Is there typevector_filtered?
 typevector_existance = 1;
@@ -40,14 +40,14 @@ sfreq = 1000; % [Hz]
 frontDistance = 350; % [mm]
 
 % Width
-width = 60; % [mm]  % 縦軸の正規化値
+width = 45; % [mm]  % 縦軸の正規化値
 
 % Object data
 object_width = 15; % [mm]   % 横軸の正規化値
 object_length = 15; % [mm]  % 横軸原点のずらし値
 
 % Output folder name
-output_folder_name = '../PIV_xo350W60固定壁L1H1/result';
+output_folder_name = '../PIV_xo350W45固定壁L1H1定常/result';
 
 
 %% Analyze

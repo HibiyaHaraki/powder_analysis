@@ -20,17 +20,17 @@ logging_func("Analyze 1 Pixel data");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W30固定壁L1H1定常/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W45固定壁L1H1定常/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W30固定壁L1H1定常/Truck_data.mat";
+Truck_data_filename = "../加速度データ_xo350W45固定壁L1H1定常/Truck_data.mat";
 
 % Output folder
-output_folder = '../PIV_xo350W30固定壁L1H1定常/result';
+output_folder = '../PIV_xo350W45固定壁L1H1定常/result';
 
 % Search pixel
-search_x = [400, 400, 500]; % [mm]
-search_y = [5  ,20, 20]; % [mm]
+search_x = [410,412.5,415]; % [mm]
+search_y = [5,5,5]; % [mm]
 
 % Time range for FFT
 acceleration_fft_time_range = false;
