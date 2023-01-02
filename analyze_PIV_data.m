@@ -24,14 +24,19 @@ logging_func("Analyze PIV data");
 
 % Input files
 
-file_name(1) = "../PIV_xo350W45固定壁L1H1定常/データ/データ1/data1combine.mat";
-file_name(2) = "../PIV_xo350W45固定壁L1H1定常/データ/データ2/data2combine.mat";
-file_name(3) = "../PIV_xo350W45固定壁L1H1定常/データ/データ3/data3combine.mat";
-file_name(4) = "../PIV_xo350W45固定壁L1H1定常/データ/データ4/data4combine.mat";
-file_name(5) = "../PIV_xo350W45固定壁L1H1定常/データ/データ5/data5combine.mat";
+file_name(1) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ1/reference_data1_combine.mat";
+file_name(2) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ2/reference_data2_combine.mat";
+file_name(3) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ3/reference_data3_combine.mat";
+file_name(4) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ4/reference_data4_combine.mat";
+file_name(5) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ5/reference_data5_combine.mat";
+file_name(6) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ6/reference_data6_combine.mat";
+file_name(7) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ7/reference_data7_combine.mat";
+file_name(8) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ8/reference_data8_combine.mat";
+file_name(9) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ9/reference_data9_combine.mat";
+file_name(10) = "../PIV_xo350W100固定壁/新データ/最適化/データ/データ10/reference_data10_combine.mat";
 
 % Is there typevector_filtered?
-typevector_existance = 1;
+typevector_existance = 0;
 
 % Sampling frequency
 sfreq = 1000; % [Hz]
@@ -40,14 +45,14 @@ sfreq = 1000; % [Hz]
 frontDistance = 350; % [mm]
 
 % Width
-width = 45; % [mm]  % 縦軸の正規化値
+width = 100; % [mm]  % 縦軸の正規化値
 
 % Object data
 object_width = 15; % [mm]   % 横軸の正規化値
 object_length = 15; % [mm]  % 横軸原点のずらし値
 
 % Output folder name
-output_folder_name = '../PIV_xo350W45固定壁L1H1定常/result';
+output_folder_name = '../PIV_xo350W100固定壁/新データ/最適化/result';
 
 
 %% Analyze

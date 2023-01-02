@@ -29,16 +29,16 @@ output_folder = '../PIV_xo350W45固定壁L1H1定常/result';
 search_x = [20,30]; % [mm]
 
 % Search frequency
-search_freq = 30; % [Hz]
+search_freq = 12; % [Hz]
 
 % Time range for FFT
 acceleration_fft_time_range = false;
 acceleration_fft_start_time = 0.5; % [s]
 acceleration_fft_stop_time = 1; % [s]
 
-constVelocity_fft_time_range = false;
-constVelocity_fft_start_time = 0.5; % [s]
-constVelocity_fft_stop_time = 1; % [s]
+constVelocity_fft_time_range = true;
+constVelocity_fft_start_time = 1; % [s]
+constVelocity_fft_stop_time = 3; % [s]
 
 % x-range in FFT result
 x_range = [0 100];

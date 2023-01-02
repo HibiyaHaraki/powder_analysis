@@ -1,4 +1,4 @@
-function [search_u_filtered,normalized_y,real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename,Truck_data_filename,search_x,search_t)
+function [search_u_filtered,search_v_filtered,normalized_y,real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename,Truck_data_filename,search_x,search_t)
     % Check Inputs
     if (~exist(PIV_data_filename,'file'))
         error("Cannot find %s",PIV_data_filename);
@@ -22,7 +22,7 @@ function [search_u_filtered,normalized_y,real_t,real_t_ind,real_x,real_x_ind] = 
         "frontDistance", ...
         "mean_x","mean_y", ...
         "reference_velocity_ratio",...
-        "meanMap_u_filtered");
+        "meanMap_u_filtered", "meanMap_v_filtered");
     load(Truck_data_filename,"sfreq", ...
         'truck_acceleration_time_step','truck_constVelocity_time_step', ...
         'truck_acceleration_mean_vx','truck_constVelocity_mean_vx');
@@ -47,12 +47,15 @@ function [search_u_filtered,normalized_y,real_t,real_t_ind,real_x,real_x_ind] = 
     end
 
     search_u_filtered = cell(numSearch,1);
+    search_v_filtered = cell(numSearch,1);
     normalized_y = cell(numSearch,1);
     for ii = 1:numSearch
         if (truck_acceleration_time_step < real_t_ind(ii))
             search_u_filtered(ii) = {meanMap_u_filtered{real_t_ind(ii)}(:,real_x_ind(ii)) ./ max(truck_constVelocity_mean_vx)};
+            search_v_filtered(ii) = {meanMap_v_filtered{real_t_ind(ii)}(:,real_x_ind(ii)) ./ max(truck_constVelocity_mean_vx)};
         else
             search_u_filtered(ii) = {meanMap_u_filtered{real_t_ind(ii)}(:,real_x_ind(ii)) ./ (reference_velocity_ratio(real_t_ind(ii)) * truck_acceleration_mean_vx(real_t_ind(ii)))};
+            search_v_filtered(ii) = {meanMap_v_filtered{real_t_ind(ii)}(:,real_x_ind(ii)) ./ (reference_velocity_ratio(real_t_ind(ii)) * truck_acceleration_mean_vx(real_t_ind(ii)))};
         end
         normalized_y(ii) = {mean_y{real_t_ind(ii)}*1000};
     end

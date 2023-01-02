@@ -13,18 +13,18 @@ logging_func("Create animation");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W30固定壁L1H1定常/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W60移動壁L1H1/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W30固定壁L1H1定常/Truck_data.mat";
+Truck_data_filename = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
 
 % Output folder
-output_folder = '../PIV_xo350W30固定壁L1H1定常/result';
+output_folder = '../PIV_xo350W60移動壁L1H1/result';
 
 % Record (1-on, 0-off)
-RECORD_MODE = 0;
-output_filename = "colormap_animation_W30固定壁L1H1定常.mp4"
-frame_rate = 100; % Frame Rate
+RECORD_MODE = 1;
+output_filename = "colormap_animation_W60移動壁L1H1.mp4"
+frame_rate = 20; % Frame Rate
 
 %% Check input
 

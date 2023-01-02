@@ -18,19 +18,19 @@ logging_func("Analyze a map data");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W45固定壁L1H1定常/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W60移動壁L1H1/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W45固定壁L1H1定常/Truck_data.mat";
+Truck_data_filename = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
 
 % Output folder
-output_folder = '../PIV_xo350W45固定壁L1H1定常/result';
+output_folder = '../PIV_xo350W60移動壁L1H1/result';
 
 % Search time
-search_t = [];
+search_t = [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2];
 
 % Search reynolds
-search_reynolds = [500,700];
+search_reynolds = [];
 
 % Quiver size
 quiverSize = 3;

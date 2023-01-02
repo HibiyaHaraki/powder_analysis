@@ -19,20 +19,20 @@ logging_func("Analyze multiple X line data");
 %% Setting
 
 % PIV data file name
-PIV_data_filename(1) = "../PIV_xo350W60固定壁L1H1/result/PIV_data.mat";
-PIV_data_filename(2) = "../PIV_xo350W60移動壁L1H1/result/PIV_data.mat";
+PIV_data_filename(1) = "../PIV_xo350W30固定壁L1H1/result/PIV_data.mat";
+PIV_data_filename(2) = "../PIV_xo350W45固定壁L1H1/result/PIV_data.mat";
 PIV_data_filename(3) = "../PIV_xo350W60固定壁L1H1/result/PIV_data.mat";
 
 % Truck data file name
-Truck_data_filename(1) = "../加速度データ_xo350W60固定壁L1H1/Truck_data.mat";
-Truck_data_filename(2) = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
+Truck_data_filename(1) = "../加速度データ_xo350W30固定壁L1H1/Truck_data.mat";
+Truck_data_filename(2) = "../加速度データ_xo350W45固定壁L1H1/Truck_data.mat";
 Truck_data_filename(3) = "../加速度データ_xo350W60固定壁L1H1/Truck_data.mat";
 
 % Search pixel
-search_x = [360, 370, 380, 390, 400, 410, 420, 430, 440, 450]; % [mm]
+search_x = [350, 360, 370, 380]; % [mm]
 
-% Search time
-search_t = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; % [s]
+% Search reynolds number
+search_reynolds = [1500, 1500, 1500, 1500]; % [s]
 
 % Figure legend
 figure_legend(1) = "W30";
@@ -44,7 +44,7 @@ NORMALIZE_OPTION = 1; % 0-object_width, 1-width
 
 % x-lim
 XLIM = true;
-xlim_range = [-0.4 1.5];
+xlim_range = [-0.3 1.4];
 
 %% Check input
 
@@ -74,7 +74,7 @@ if (searchFiles ~= length(figure_legend))
     return;
 end
 
-if (length(search_x) ~= length(search_t))
+if (length(search_x) ~= length(search_reynolds))
     error("Search-x and Search-t should be same size");
     return;
 end
@@ -83,11 +83,18 @@ numSearch = length(search_x);
 %% Visualize data
 % Get all u_filtered data
 for ii = 1:numSearch
-    logging_func(sprintf("Compute u of XLine (x=%.3f)",search_x(ii)));
     search_u_filtered = cell(searchFiles,1);
     search_v_filtered = cell(searchFiles,1);
     normalized_y = cell(searchFiles,1);
     for jj = 1:searchFiles
+        load(Truck_data_filename(jj),"sfreq");
+    
+        % Get index of search reynolds
+        [Re_D,Re_H,Re_L] = solve_reynolds(PIV_data_filename(jj),Truck_data_filename(jj));
+        if (~isempty(search_reynolds))
+            [~,ind_t] = min(abs(Re_H' - search_reynolds'),[],2);
+            search_t = (ind_t' - 1)./sfreq;
+        end
         [search_u_filtered(jj),search_v_filtered(jj),normalized_y(jj),real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename(jj),Truck_data_filename(jj),search_x(ii),search_t(ii));
     end
 
@@ -104,8 +111,6 @@ for ii = 1:numSearch
             ylim([0,1]);
         end
     end
-    xline(0,"b-");
-    xline(1,"r-");
     hold off
     grid on
     xlabel("u/U");
@@ -119,8 +124,8 @@ for ii = 1:numSearch
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("u in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
-    %saveas(gcf,sprintf("multiple_XLine_u_%.3f_%.3f.png",real_t(ii),real_x(ii)));
+    title(sprintf("u in x line (t=%.3f[s], x=%.3f[m], Re=%.3f)",real_t,real_x(1),Re_H(ind_t(ii))));
+    %saveas(gcf,sprintf("multiple_XLine_reynolds_u_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 
     % Visualize v
     figure
@@ -135,8 +140,6 @@ for ii = 1:numSearch
             ylim([0,1]);
         end
     end
-    xline(0,"b-");
-    xline(1,"r-");
     hold off
     grid on
     xlabel("v/U");
@@ -150,10 +153,10 @@ for ii = 1:numSearch
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("v in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
+    title(sprintf("v in x line (t=%.3f[s], x=%.3f[m], Re=%.3f)",real_t,real_x(1),Re_H(ind_t(ii))));
     %saveas(gcf,sprintf("multiple_XLine_reynolds_v_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 
-    % Visualize absolute velocity
+    % Visualize velocity
     figure
     hold on
     for jj = 1:searchFiles
@@ -166,8 +169,6 @@ for ii = 1:numSearch
             ylim([0,1]);
         end
     end
-    xline(0,"b-");
-    xline(1,"r-");
     hold off
     grid on
     xlabel("V/U");
@@ -181,6 +182,6 @@ for ii = 1:numSearch
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("Absolute velocity in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
+    title(sprintf("Absolute velocity in x line (t=%.3f[s], x=%.3f[m], Re=%.3f)",real_t,real_x(1),Re_H(ind_t(ii))));
     %saveas(gcf,sprintf("multiple_XLine_reynolds_absVelocity_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 end

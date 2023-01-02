@@ -36,11 +36,13 @@ function [characteristicVelocity_acceleration,characteristicVelocity_constVeloci
     if (~isnan(Truck_data.truck_acceleration_mean_vx))
         time_step = min([length(PIV_data.meanMap_u_filtered),length(PIV_data.reference_velocity_ratio),length(Truck_data.truck_acceleration_mean_vx)]);
         characteristicVelocity_acceleration = PIV_data.reference_velocity_ratio(1:time_step) .* Truck_data.truck_acceleration_mean_vx(1:time_step);
+        logging_func(sprintf("%s has acceleration part data (%d time step)",Truck_data_filename,time_step));
     end
 
     % constant velocity
     characteristicVelocity_constVelocity = NaN;
     if (~isnan(Truck_data.truck_constVelocity_mean_vx))
         characteristicVelocity_constVelocity = PIV_data.reference_velocity_ratio(end) .* Truck_data.truck_constVelocity_mean_vx;
+        logging_func(sprintf("%s has constant velocity part data (%d time step)",Truck_data_filename,length(Truck_data.truck_constVelocity_mean_vx)));
     end
 end

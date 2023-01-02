@@ -7,6 +7,6 @@ function logging_func(message_str)
     % All risks of running this script is always with you.
     %
 
-    str_datetime = string(datetime('now','Format','MM/dd HH:mm:ss.SSS'));
+    str_datetime = string(datetime('now','Format','yyyy/MM/dd HH:mm:ss.SSS'));
     fprintf("[%s] %s\n",str_datetime,message_str);
 end

@@ -18,7 +18,7 @@ logging_func("Get reference velocity ratio");
 
 %% Setting
 % Experiment PIV data
-experiment_PIV_data_folder = "../PIV_xo350W45固定壁L1H1定常/result";
+experiment_PIV_data_folder = "../PIV_xo350W100固定壁/新データ/最適化/result";
 
 % Reference Truck data
 reference_truck_data = "../加速度データ_xo350W100固定壁_新/Truck_data.mat";  %代表速度の基準にする速度データ

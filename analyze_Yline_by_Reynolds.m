@@ -18,16 +18,16 @@ logging_func("Analyze Y line data");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W60移動壁L1H1/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W45固定壁L1H1定常/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
+Truck_data_filename = "../加速度データ_xo350W45固定壁L1H1定常/Truck_data.mat";
 
 % Search pixel
-search_y = [58, 58]; % [mm]
+search_y = [355, 500, 500]; % [mm]
 
-% Search time
-search_t = [3.1, 3.2]; % [s]
+% Search reynolds number
+search_reynolds = [250, 500, 700]; % [s]
 
 % Object width
 object_width = 15; % [mm]
@@ -47,7 +47,7 @@ if (~exist(Truck_data_filename,'file'))
     return;
 end
 
-if (length(search_y) ~= length(search_t))
+if (length(search_y) ~= length(search_reynolds))
     error("Search-x and Search-t should be same size");
     return;
 end
@@ -74,9 +74,13 @@ time_step = (0:length(mean_x)-1)./sfreq;
 %% Convert unit of search pixel
 search_y = search_y ./ 1000;
 
-%% Search t
-[~,real_t_ind] = min(abs(time_step-search_t'),[],2);
-real_t = time_step(real_t_ind)';
+%% Get index of search reynolds
+[Re_D,Re_H,Re_L] = solve_reynolds(PIV_data_filename,Truck_data_filename);
+if (~isempty(search_reynolds))
+    [~,real_t_ind] = min(abs(Re_H' - search_reynolds'),[],2);
+    search_t = (real_t_ind' - 1)./sfreq;
+    real_t = search_t;
+end
 
 %% Search y
 real_y_ind = zeros(numSearch,1);
@@ -96,16 +100,13 @@ for ii = 1:numSearch
 
     % Visualize u 
     figure
-    hold on
     plot(mean_x{real_t_ind(ii)}*1000/object_width,search_u_filtered,"-o");
-    yline(0,"b-");
-    hold off
     grid on
     xlabel("x/H");
     ylabel("u/U");
     xlim([0 max(mean_x{real_t_ind(ii)}*1000/object_width)]);
     %ylim([min(mean_x{real_t_ind(ii)}*1000/object_width),max(mean_x{real_t_ind(ii)}*1000/object_width)]);
-    title(sprintf("u in y line (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+    title(sprintf("u in y line (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
 
     % FFT
     search_u_filtered_FFT = abs(fft(rmmissing(search_u_filtered))./length(search_u_filtered));
@@ -120,7 +121,7 @@ for ii = 1:numSearch
     xlabel("Freq [1/mm]");
     ylabel("Amplitude");
     xlim([min(f),max(f)]);
-    title(sprintf("FFT u result (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+    title(sprintf("FFT u result (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
 end
 
 %% Visualize meanMap_v_filtered in search y-line and FFT
@@ -139,7 +140,7 @@ for ii = 1:numSearch
     ylabel("u/U");
     xlim([0 max(mean_x{real_t_ind(ii)}*1000/object_width)]);
     %ylim([min(mean_x{real_t_ind(ii)}*1000/object_width),max(mean_x{real_t_ind(ii)}*1000/object_width)]);
-    title(sprintf("v in y line (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+    title(sprintf("v in y line (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
 
     % FFT
     search_v_filtered_FFT = abs(fft(rmmissing(search_v_filtered))./length(search_v_filtered));
@@ -154,7 +155,7 @@ for ii = 1:numSearch
     xlabel("Freq [1/mm]");
     ylabel("Amplitude");
     xlim([min(f),max(f)]);
-    title(sprintf("FFT v result (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+    title(sprintf("FFT v result (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
 end
 
 %% Visualize meanMap_vorticity in search y-line and FFT
@@ -177,7 +178,7 @@ if (VORTICITY)
         ylabel("u/U");
         xlim([0 max(mean_x{real_t_ind(ii)}*1000/object_width)]);
         %ylim([min(mean_x{real_t_ind(ii)}*1000/object_width),max(mean_x{real_t_ind(ii)}*1000/object_width)]);
-        title(sprintf("vorticity in y line (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+        title(sprintf("vorticity in y line (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
     
         % FFT
         search_vorticity_FFT = abs(fft(rmmissing(search_vorticity))./length(search_vorticity));
@@ -192,6 +193,6 @@ if (VORTICITY)
         xlabel("Freq [1/mm]");
         ylabel("Amplitude");
         xlim([min(f),max(f)]);
-        title(sprintf("FFT vorticity result (t=%.3f[s], y=%.3f[m])",real_t(ii),real_y(ii)));
+        title(sprintf("FFT vorticity result (t=%.3f[s], y=%.3f[m], Re=%.3f)",real_t(ii),real_y(ii),Re_H(real_t_ind(ii))));
     end
 end

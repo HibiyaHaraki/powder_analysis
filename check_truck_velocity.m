@@ -18,15 +18,14 @@ logging_func("Check truck velocity");
 %% Setting
 
 % Specify input files (truck acceleration data)
-input_file_name = "../加速度データ_xo350W30固定壁L1H1定常/maindata";
+input_file_name = "../加速度可視化_xo350W60移動壁L1H1/定常/maindata";
 input_file_ID = [1:4];
 
 % Specify max number of data
 max_num_data = 2*10^4; % 最大20s計測で1000fpsだから、データの最大数は2*10^4
 
 % Point of starting acceleration in PIV data
-PIV_start_accleration_point = [603, 719, 551, 535];
-
+PIV_start_accleration_point = [500, 500, 500, 666];
 % Specify velocity analysis mode (1-analysis 0-not analsis)
 ACCELERATION_MODE  = 1;
 CONSTVELOCITY_MODE = 1;
@@ -42,7 +41,7 @@ offset = 2;
 SAVE_MODE = 1;
 
 % Specify output folder and file
-output_folder_name = '../加速度データ_xo350W30固定壁L1H1定常';
+output_folder_name = ['../加速度可視化_xo350W60移動壁L1H1/定常'];
 output_file_name = 'truck_data';
 
 %% Check specified files and folders
@@ -208,7 +207,7 @@ if (ACCELERATION_MODE)
     logging_func("Compute truck mean vx in acceleration");
 end
 
-% Compute mean vx in acceleration
+% Compute mean vx in constant velocity
 if (CONSTVELOCITY_MODE)
     % Get minimum time step in acceleration
     truck_constVelocity_time_step = min(stop_constVelocity - start_constVelocity + 1);
@@ -219,6 +218,11 @@ if (CONSTVELOCITY_MODE)
         truck_constVelocity_vx(:,ii) = vx(start_constVelocity(ii):start_constVelocity(ii)+truck_constVelocity_time_step-1,ii);
     end
     truck_constVelocity_mean_vx = mean(truck_constVelocity_vx,2);
+    constVelocity_mean_vx = mean(truck_constVelocity_vx,1);
+    for ii = 1:num_input_files
+        fprintf("Mean vx (input file %d): %.3f [m/s]\n",ii,constVelocity_mean_vx(ii));
+    end
+    fprintf("Mean vx (all input file): %.3f [m/s]\n",mean(truck_constVelocity_vx,'all'));
     logging_func("Compute truck mean vx in constant velocity move");
 end
 

@@ -1,9 +1,9 @@
 clear; close all; clc;
-logging_func("Analyze multiple X line data");
+logging_func("Analyze multiple X line data behind the object");
 %% Explanation
 
 %
-% analyze_multiple_Xlines
+% analyze_multiple_Xlines_behind_Object
 %
 % created Hibiya Haraki 2022
 % All risks of running this script is always with you.
@@ -29,10 +29,10 @@ Truck_data_filename(2) = "../加速度データ_xo350W60移動壁L1H1/Truck_data
 Truck_data_filename(3) = "../加速度データ_xo350W60固定壁L1H1/Truck_data.mat";
 
 % Search pixel
-search_x = [360, 370, 380, 390, 400, 410, 420, 430, 440, 450]; % [mm]
+search_x_behind_Object = [-10, 20, 40]; % [mm] %物体の後ろからの距離
 
 % Search time
-search_t = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; % [s]
+search_t = [1, 1, 1]; % [s]
 
 % Figure legend
 figure_legend(1) = "W30";
@@ -74,21 +74,28 @@ if (searchFiles ~= length(figure_legend))
     return;
 end
 
-if (length(search_x) ~= length(search_t))
-    error("Search-x and Search-t should be same size");
+if (length(search_x_behind_Object) ~= length(search_t))
+    error("Search-x_behind_Object and Search-t should be same size");
     return;
 end
-numSearch = length(search_x);
+numSearch = length(search_x_behind_Object);
+
+%% Compute search_x
+search_x = zeros(searchFiles,length(search_x_behind_Object));
+for ii = 1:searchFiles
+    search_x(ii,:) = compute_x_behind_object(PIV_data_filename(ii),Truck_data_filename(ii),search_x_behind_Object,search_t);
+    load(PIV_data_filename(ii),"frontDistance");
+    search_x(ii,:) = search_x(ii,:) .* 1000 + frontDistance;
+end
 
 %% Visualize data
 % Get all u_filtered data
 for ii = 1:numSearch
-    logging_func(sprintf("Compute u of XLine (x=%.3f)",search_x(ii)));
     search_u_filtered = cell(searchFiles,1);
     search_v_filtered = cell(searchFiles,1);
     normalized_y = cell(searchFiles,1);
     for jj = 1:searchFiles
-        [search_u_filtered(jj),search_v_filtered(jj),normalized_y(jj),real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename(jj),Truck_data_filename(jj),search_x(ii),search_t(ii));
+        [search_u_filtered(jj),search_v_filtered(jj),normalized_y(jj),real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename(jj),Truck_data_filename(jj),search_x(jj,ii),search_t(ii));
     end
 
     % Visualize u

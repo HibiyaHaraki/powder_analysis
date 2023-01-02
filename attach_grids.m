@@ -18,26 +18,26 @@ logging_func("Start attaching grids");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W30固定壁L1H1/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W60移動壁L1H1/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W30固定壁L1H1/Truck_data.mat";
+Truck_data_filename = "../加速度可視化_xo350W60移動壁L1H1/非定常/Truck_data.mat";
 
 % Image folder path
-image_folder_path = "../PIV_xo350W30固定壁L1H1/データ/データ1/data1";
-image_title = "data1";
+image_folder_path = "../可視化_xo350W60移動壁L1H1/非定常/data";
+image_title = "data";
 
 % Output folder
-%output_folder = '../PIV_xo350W30固定壁L1H1定常/result';
+output_folder = '../可視化_xo350W60移動壁L1H1/非定常/data';
 
 % Start time step of image
-image_start_step = 529;
+image_start_step = 475;
 
 % Search t
-search_t = [1,2];
+search_t = [1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 2.8, 2.9, 3.0, 3.1, 3.2];
 
 % Search reynolds number
-search_reynolds = [500,700];
+search_reynolds = [1];
 
 % Ratio between real length [mm] and pixcel
 standard_real_length = 10; % [mm]
@@ -45,9 +45,9 @@ standard_pixcel = 56.99; % [pxs]
 
 % Range
 standard_point_x = 1;
-standard_point_y = 216;
+standard_point_y = 148;
 standard_x_length = 1023;
-standard_y_length = 170;
+standard_y_length = 338;
 
 % Grid interval
 grid_interval = 10; % [mm]
@@ -149,7 +149,7 @@ time_step = length(meanMap_u_filtered);
 [~,ind_t_reynolds] = min(abs(Re_H' - search_reynolds),[],2);
 
 %% Convert to image file path
-ind_t = sort(unique([ind_t_t,ind_t_reynolds]));
+ind_t = sort(unique([ind_t_t;ind_t_reynolds]));
 numFiles = length(ind_t);
 logging_func(sprintf("Output %d files",numFiles));
 
@@ -174,8 +174,8 @@ for ii = 1:numFiles
     figure
     imshow(I(standard_point_y:standard_point_y+standard_y_length,standard_point_x:standard_point_x+standard_x_length));
     hold on;
-    xline(line_list_x,"k-");
-    yline(flip(line_list_y),"k-");
+    xline(line_list_x,"y-");
+    yline(flip(line_list_y),"y-");
     hold off
     axis on
     xticks(line_list_x);

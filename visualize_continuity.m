@@ -67,7 +67,7 @@ for ii = 1:num_search_t
     % Get interval
     x_int = abs(mean_x{ind_t(ii)}(2) - mean_x{ind_t(ii)}(1));
     y_int = abs(mean_y{ind_t(ii)}(2) - mean_y{ind_t(ii)}(1));
-    continuity_map = compute_continuity(meanMap_u_filtered{ind_t(ii)},meanMap_v_filtered{ind_t(ii)},x_int,y_int);
+    [u_continuity_map,v_continuity_map,continuity_map] = compute_continuity(meanMap_u_filtered{ind_t(ii)},meanMap_v_filtered{ind_t(ii)},x_int,y_int);
 
     % Visualize
     figure
