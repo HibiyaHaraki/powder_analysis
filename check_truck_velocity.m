@@ -18,17 +18,17 @@ logging_func("Check truck velocity");
 %% Setting
 
 % Specify input files (truck acceleration data)
-input_file_name = "../加速度可視化_xo350W60移動壁L1H1/定常/maindata";
-input_file_ID = [1:4];
+input_file_name = "../基準加速度_W60固定壁/maindata";
+input_file_ID = [1:3];
 
 % Specify max number of data
 max_num_data = 2*10^4; % 最大20s計測で1000fpsだから、データの最大数は2*10^4
 
 % Point of starting acceleration in PIV data
-PIV_start_accleration_point = [500, 500, 500, 666];
+PIV_start_accleration_point = [593, 564, 459];
 % Specify velocity analysis mode (1-analysis 0-not analsis)
 ACCELERATION_MODE  = 1;
-CONSTVELOCITY_MODE = 1;
+CONSTVELOCITY_MODE = 0;
 
 % Specify threshold for accelerating start
 accelerating_start_threshold = 3E-3;
@@ -41,7 +41,7 @@ offset = 2;
 SAVE_MODE = 1;
 
 % Specify output folder and file
-output_folder_name = ['../加速度可視化_xo350W60移動壁L1H1/定常'];
+output_folder_name = ['../基準加速度_W60固定壁'];
 output_file_name = 'truck_data';
 
 %% Check specified files and folders
@@ -615,6 +615,6 @@ toc
 
 %% Function for log and time-stamp
 function logging_func(message_str)
-str_datetime = string(datetime('now','Format','MM/dd HH:mm:ss.SSS'));
+str_datetime = string(datetime('now','Format','yyyy/MM/dd HH:mm:ss.SSS'));
 fprintf("[%s] %s\n",str_datetime,message_str);
 end

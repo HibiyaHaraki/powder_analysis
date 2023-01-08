@@ -19,23 +19,19 @@ logging_func("Analyze X line data");
 %% Setting
 
 % PIV data file name
-PIV_data_filename = '../PIV_xo350W60移動壁L1H1/result/PIV_data.mat';
+PIV_data_filename = '../PIV_xo350W60固定壁L3H1/result/PIV_data.mat';
 
 % Truck data file name
-Truck_data_filename = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
+Truck_data_filename = "../加速度データ_xo350W60固定壁L3H1/Truck_data.mat";
 
 % Search pixel
-search_x = [495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495, 495]; % [mm]
+search_x = [525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525, 525]; % [mm]
 
 % Search time
-search_t = [0.3, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.7, 1.9, 2.1, 2.3, 2.5, 2.7, 2.9, 3.1]; % [s]
+search_t = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.8, 2.1, 2.4, 2.7, 3.0]; % [s]
 
 % Normalized option
 NORMALIZE_OPTION = 0; % 0-object_width, 1-width
-
-% x-lim
-XLIM = true;
-xlim_range = [-0.6 1.5];
 
 
 %% Check input
@@ -74,9 +70,7 @@ if (NORMALIZE_OPTION == 0)
         hold off
         grid on
         xlabel("u/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlim([-0.6, 1.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else
@@ -97,9 +91,7 @@ else
         hold off
         grid on
         xlabel("u/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlim([-0.6, 1.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else
@@ -125,9 +117,7 @@ if (NORMALIZE_OPTION == 0)
         hold off
         grid on
         xlabel("v/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlim([-0.6, 0.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else
@@ -148,9 +138,7 @@ else
         hold off
         grid on
         xlabel("v/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlim([-0.6, 0.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else
@@ -175,17 +163,15 @@ if (NORMALIZE_OPTION == 0)
         xline(1,"r-");
         hold off
         grid on
-        xlabel("V/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlabel("Velocity/U");
+        xlim([0, 1.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else
             ylabel("y/W");
         end
         ylim([min(normalized_y{ii}./object_width),max(normalized_y{ii}./object_width)]);
-        title(sprintf("Abbsolute velocity in x line (t=%.3f[s], x=%.3f[m])",real_t(ii),real_x(ii)));
+        title(sprintf("Absolute velocity in x line (t=%.3f[s], x=%.3f[m])",real_t(ii),real_x(ii)));
         %saveas(gcf,sprintf("XLine_absVelocity_%.3f_%.3f.png",real_t(ii),real_x(ii)));
     end
 else
@@ -198,10 +184,8 @@ else
         xline(1,"r-");
         hold off
         grid on
-        xlabel("V/U");
-        if (XLIM)
-            xlim(xlim_range);
-        end
+        xlabel("Velocity/U");
+        xlim([0, 1.6]);
         if (NORMALIZE_OPTION == 0)
             ylabel("y/H");
         else

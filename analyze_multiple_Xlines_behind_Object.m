@@ -19,32 +19,34 @@ logging_func("Analyze multiple X line data behind the object");
 %% Setting
 
 % PIV data file name
-PIV_data_filename(1) = "../PIV_xo350W60固定壁L1H1/result/PIV_data.mat";
-PIV_data_filename(2) = "../PIV_xo350W60移動壁L1H1/result/PIV_data.mat";
-PIV_data_filename(3) = "../PIV_xo350W60固定壁L1H1/result/PIV_data.mat";
+PIV_data_filename(1) = "../PIV_xo350W60移動壁L1H1/result/PIV_data.mat";
+PIV_data_filename(2) = "../PIV_xo350W60移動壁L3H1/result/PIV_data.mat";
 
 % Truck data file name
-Truck_data_filename(1) = "../加速度データ_xo350W60固定壁L1H1/Truck_data.mat";
-Truck_data_filename(2) = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
-Truck_data_filename(3) = "../加速度データ_xo350W60固定壁L1H1/Truck_data.mat";
+Truck_data_filename(1) = "../加速度データ_xo350W60移動壁L1H1/Truck_data.mat";
+Truck_data_filename(2) = "../加速度データ_xo350W60移動壁L3H1/Truck_data.mat";
 
 % Search pixel
-search_x_behind_Object = [-10, 20, 40]; % [mm] %物体の後ろからの距離
+search_x_behind_Object = [130, 130, 130, 130, 130, 130, 130]; % [mm] %物体の後ろからの距離
 
 % Search time
-search_t = [1, 1, 1]; % [s]
+search_t = [1.6, 1.7, 1.8, 2.1, 2.4, 2.7, 3.0]; % [s]
 
 % Figure legend
-figure_legend(1) = "W30";
-figure_legend(2) = "W45";
-figure_legend(3) = "W60";
+figure_legend(1) = "AR=1";
+figure_legend(2) = "AR=3";
 
 % Normalized option
-NORMALIZE_OPTION = 1; % 0-object_width, 1-width
+NORMALIZE_OPTION = 0; % 0-object_width, 1-width
 
 % x-lim
 XLIM = true;
-xlim_range = [-0.4 1.5];
+xlim_range = [-0.6 1.6];
+YLIM = true;
+ylim_range = [-0.6 0.6];
+VELOCITYLIM = true;
+VELOCITYlim_range = [0 1.6];
+
 
 %% Check input
 
@@ -95,7 +97,8 @@ for ii = 1:numSearch
     search_v_filtered = cell(searchFiles,1);
     normalized_y = cell(searchFiles,1);
     for jj = 1:searchFiles
-        [search_u_filtered(jj),search_v_filtered(jj),normalized_y(jj),real_t,real_t_ind,real_x,real_x_ind] = compute_Xline(PIV_data_filename(jj),Truck_data_filename(jj),search_x(jj,ii),search_t(ii));
+        [search_u_filtered(jj),search_v_filtered(jj),normalized_y(jj),real_t,real_t_ind,real_x(jj),real_x_ind(jj)] = compute_Xline(PIV_data_filename(jj),Truck_data_filename(jj),search_x(jj,ii),search_t(ii));
+        figure_legend_updated(jj) = figure_legend(jj) + sprintf(" (x=%.3f [mm])",real_x(jj));
     end
 
     % Visualize u
@@ -126,7 +129,7 @@ for ii = 1:numSearch
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("u in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
+    title(sprintf("u in x line (t=%.3f[s],%.3f [mm] behind object)",real_t,search_x_behind_Object(ii)));
     %saveas(gcf,sprintf("multiple_XLine_u_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 
     % Visualize v
@@ -152,12 +155,12 @@ for ii = 1:numSearch
     else
         ylabel("y/W");
     end
-    if (XLIM)
-        xlim(xlim_range);
+    if (YLIM)
+        xlim(ylim_range);
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("v in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
+    title(sprintf("v in x line (t=%.3f[s], %.3f [mm] behind object)",real_t,search_x_behind_Object(ii)));
     %saveas(gcf,sprintf("multiple_XLine_reynolds_v_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 
     % Visualize absolute velocity
@@ -183,11 +186,11 @@ for ii = 1:numSearch
     else
         ylabel("y/W");
     end
-    if (XLIM)
-        xlim(xlim_range);
+    if (VELOCITYLIM)
+        xlim(VELOCITYlim_range);
     end
     legend(figure_legend);
     %ylim([min(normalized_y{ii}),max(normalized_y{ii})]);
-    title(sprintf("Absolute velocity in x line (t=%.3f[s], x=%.3f[m])",real_t,real_x(1)));
+    title(sprintf("Absolute velocity in x line (t=%.3f[s], %.3f [mm] behind object)",real_t,search_x_behind_Object(ii)));
     %saveas(gcf,sprintf("multiple_XLine_reynolds_absVelocity_%.3f_%.3f.png",real_t(ii),real_x(ii)));
 end
